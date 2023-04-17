@@ -19,7 +19,11 @@
 
 <script>
 
-import { mapState, mapGetters, mapMutations } from 'vuex';
+// import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
+
+const { mapState, mapGetters, mapActions } = createNamespacedHelpers('user');
+const { mapMutations: mapCounterMutations, mapState: mapCounterState } = createNamespacedHelpers('counter');
 
 export default {
 
@@ -29,21 +33,32 @@ export default {
         }
     },
     methods: {
-        ...mapMutations([
-            'increment',
-            'decrement',
+        ...mapCounterMutations({
+            increment: 'increment',
+            decrement:'decrement',
+        }),
+        ...mapActions([
+            'confimationChangeNombre',
         ]),
         changeNameUser() {
-            this.$store.dispatch('changeName', this.nameUser);
-            this.nameUser = '';
+            this.confimationChangeNombre(this.nameUser).then(() => {
+                this.nameUser = '';
+            });
         }
     },
     computed: {
+        ...mapCounterState({
+            count: 'count'
+        }),
         ...mapState([
             'nombre',
-            'apellido',
-            'count',
+            'apellido'
         ]),
+        // ...mapState({
+        //     nombre: state => state.user.nombre,
+        //     apellido: state => state.user.apellido,
+        //     count: state => state.counter.count
+        // }),
         ...mapGetters([
             'countProperties'
         ])
